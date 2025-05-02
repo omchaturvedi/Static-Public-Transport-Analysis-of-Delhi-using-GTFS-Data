@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignLink AI | Advanced ASL Translator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3a0ca3;
+            --accent: #f72585;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --background: #ffffff;
+            --background-alt: #f8f9fa;
+            --card-bg: #ffffff;
+            --border: #e9ecef;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --radius: 12px;
+        }
+
+        .dark-mode {
+            --primary: #4895ef;
+            --primary-light: #4cc9f0;
+            --primary-dark: #4361ee;
+            --accent: #f72585;
+            --text: #f8f9fa;
+            --text-light: #adb5bd;
+            --background: #121212;
+            --background-alt: #1e1e1e;
+            --card-bg: #1e1e1e;
+            --border: #333333;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background-color: var(--background);
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            background-color: var(--background);
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .dark-mode header {
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            color: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 22px;
+            color: var(--text);
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--background-alt);
+            color: var(--primary);
+            transform: rotate(20deg);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(58,134,255,0.1) 0%, rgba(58,134,255,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(247,37,133,0.1) 0%, rgba(247,37,133,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-image {
+            max-width: 600px;
+            margin: 40px auto 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transform: perspective(1000px) rotateX(5deg);
+            animation: fadeIn 1s ease-out 0.4s both, float 6s ease-in-out infinite 1s;
+        }
+
+        .hero-image img {
+            width: 100%;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .hero-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .translator-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            max-width: 800px;
+            margin: -50px auto 0;
+            position: relative;
+            z-index: 10;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .translator-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .translator-container:hover {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        #inputSentence {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            color: var(--text);
+            transition: var(--transition);
+            resize: none;
+            min-height: 120px;
+        }
+
+        #inputSentence:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .translate-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+
+        .translate-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .translate-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Results Section */
+        .results {
+            margin-top: 40px;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .results.show {
+            opacity: 1;
+            height: auto;
+        }
+
+        .result-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .result-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-title i {
+            color: var(--accent);
+        }
+
+        .asl-translation {
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .sign-breakdown {
+            margin-top: 30px;
+        }
+
+        .sign-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px dashed var(--border);
+            transition: var(--transition);
+        }
+
+        .sign-item:hover {
+            background-color: var(--background-alt);
+            border-radius: var(--radius);
+            padding: 15px;
+        }
+
+        .sign-letter {
+            font-weight: 600;
+            font-size: 1.3rem;
+            min-width: 30px;
+            text-align: center;
+            color: var(--primary);
+            background-color: var(--background-alt);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sign-word {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .sign-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .grammar-notes {
+            background-color: var(--background-alt);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-top: 30px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .grammar-notes:hover {
+            transform: translateX(5px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background-color: var(--background-alt);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1548613053-e68fa3d0f3d6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80') center/cover;
+            opacity: 0.03;
+            z-index: 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .feature-card:hover {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2);
+            color: var(--accent);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .testimonial-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            text-align: left;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            position: relative;
+        }
+
+        .testimonial-content::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.2;
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            line-height: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .author-info h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--background-alt);
+            padding: 80px 0 30px;
+            position: relative;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            text-decoration: none;
+            color: var(--text-light);
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .footer-column a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--background);
+            color: var(--primary);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-5px) rotate(10deg);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .bounce {
+            animation: bounce 1.5s infinite;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .translator-container {
+                padding: 25px;
+            }
+            
+            .result-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .translate-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">👐</span>
+                <span>SignLink AI</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button class="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="#contact" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1 class="fade-in-up">Advanced ASL Translator</h1>
+                <p class="fade-in-up delay-1">Powered by AI to provide the most accurate American Sign Language translations with detailed explanations</p>
+                
+                <div class="hero-image fade-in-up delay-2">
+                    <img src="https://images.unsplash.com/photo-1629909613654-28e37786f0bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="People communicating in sign language">
+                </div>
+                
+                <div class="translator-container">
+                    <div class="input-group">
+                        <textarea id="inputSentence" placeholder="Type an English sentence or name to translate to ASL (e.g., 'Hello, how are you?' or 'My name is John')" rows="4"></textarea>
+                    </div>
+                    <button id="translateBtn" class="translate-btn">
+                        <i class="fas fa-hands"></i> Translate to ASL
+                    </button>
+                    
+                    <div id="results" class="results">
+                        <div class="result-card">
+                            <h2 class="result-title"><i class="fas fa-hands-helping"></i> ASL Translation</h2>
+                            <div id="aslTranslation" class="asl-translation"></div>
+                            <div id="signBreakdown" class="sign-breakdown"></div>
+                            <div id="grammarNotes" class="grammar-notes"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <div class="section-title fade-in-up">
+                    <h2>Powerful Features</h2>
+                    <p>Our AI-powered translator provides comprehensive ASL translations with detailed explanations</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card fade-in-up delay-1">
+                        <div class="feature-icon"><i class="fas fa-fingerprint"></i></div>
+                        <h3>Fingerspelling Names</h3>
+                        <p>Detailed breakdown of how to fingerspell names letter by letter in ASL with proper handshapes.</p>
+                    </div>
+                    
+                    <div class="feature-card fade-in-up delay-2">
+                        <div class="feature-icon"><i class="fas fa-sign-language"></i></div>
+                        <h3>Sign Descriptions</h3>
+                        <p>Clear instructions for each sign including hand shapes, movements, and facial expressions.</p>
+                    </div>
+                    
+                    <div class="feature-card fade-in-up delay-3">
+                        <div class="feature-icon"><i class="fas fa-language"></i></div>
+                        <h3>Grammar & Culture</h3>
+                        <p>Important ASL grammar rules and cultural context for proper, respectful communication.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="testimonials">
+            <div class="container">
+                <div class="section-title fade-in-up">
+                    <h2>What Our Users Say</h2>
+                    <p>Hear from people who are using SignLink AI to learn ASL</p>
+                </div>
+                
+                <div class="testimonial-grid">
+                    <div class="testimonial-card fade-in-up delay-1">
+                        <div class="testimonial-content">
+                            As a teacher working with deaf students, this translator has been invaluable for quickly looking up signs and proper ASL grammar.
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Sarah Johnson</h4>
+                                <p>Special Education Teacher</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card fade-in-up delay-2">
+                        <div class="testimonial-content">
+                            Learning to fingerspell my name was so easy with the detailed letter-by-letter breakdown. The animations really help!
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Michael Chen</h4>
+                                <p>ASL Student</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card fade-in-up delay-3">
+                        <div class="testimonial-content">
+                            As a CODA (Child of Deaf Adults), I appreciate how this tool explains both the signs and the cultural context.
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Jessica Williams" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Jessica Williams</h4>
+                                <p>Interpreter in Training</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="features" style="background-color: var(--primary); padding: 80px 0;">
+            <div class="container">
+                <div class="section-title fade-in-up" style="color: white;">
+                    <h2>Ready to Get Started?</h2>
+                    <p style="color: rgba(255,255,255,0.8);">Join thousands of people learning ASL with our AI-powered translator</p>
+                    <a href="#" class="btn" style="background-color: white; color: var(--primary); margin-top: 20px; display: inline-block;">Try It Free</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>SignLink AI</h3>
+                    <p>Making American Sign Language accessible through AI technology.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">ASL Learning Guide</a></li>
+                        <li><a href="#">Fingerspelling Chart</a></li>
+                        <li><a href="#">Deaf Culture</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 SignLink AI. All rights reserved. | <a href="#" style="color: var(--text-light);">Privacy Policy</a> | <a href="#" style="color: var(--text-light);">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        // Check for saved theme preference or use system preference
+        const currentTheme = localStorage.getItem('theme') || 
+                           (darkModeMediaQuery.matches ? 'dark' : 'light');
+
+        if (currentTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // Watch for system theme changes
+        darkModeMediaQuery.addEventListener('change', (e) => {
+            if (localStorage.getItem('theme') === null) {
+                if (e.matches) {
+                    body.classList.add('dark-mode');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    body.classList.remove('dark-mode');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            }
+        });
+
+        // ASL Translator Functionality
+        const translateBtn = document.getElementById('translateBtn');
+        const inputSentence = document.getElementById('inputSentence');
+        const results = document.getElementById('results');
+        const aslTranslation = document.getElementById('aslTranslation');
+        const signBreakdown = document.getElementById('signBreakdown');
+        const grammarNotes = document.getElementById('grammarNotes');
+
+        // Google Gemini API configuration
+        const GOOGLE_API_KEY = 'AIzaSyDudnt6l_RVPTuwnnj0VqrtLq8WVDewrMY';
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`;
+
+        // Function to show loading state
+        function showLoading(button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = `<span class="spinner"></span> Translating...`;
+            button.disabled = true;
+            return originalText;
+        }
+
+        // Function to hide loading state
+        function hideLoading(button, originalText) {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+
+        // Function to translate sentence to ASL using AI
+        async function translateToASL(sentence) {
+            const originalButtonText = showLoading(translateBtn);
+            results.classList.add('show');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `You are an expert in American Sign Language (ASL). When given an English sentence or name, respond with:
+
+1. For regular sentences:
+   - A clear ASL translation using natural ASL grammar
+   - A line-by-line breakdown of each sign with detailed descriptions
+   - Any important grammar notes
+
+2. For names (like "My name is..."):
+   - Explanation that names are fingerspelled in ASL
+   - Detailed breakdown of each letter's handshape with clear instructions
+   - Tips for clear fingerspelling
+
+Format your response exactly like this:
+
+**ASL Translation:**
+[ASL sentence structure or fingerspelling explanation]
+
+**Sign Breakdown:**
+[WORD/LETTER] - [Detailed description of how to sign it, including handshape, orientation, movement, and facial expressions]
+[WORD/LETTER] - [Detailed description of how to sign it]
+...
+
+**Grammar Notes:**
+[Any important ASL grammar rules or fingerspelling tips]
+
+Translate this: "${sentence}"`
+                            }]
+                        }]
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    displayAIResponse(aiResponse);
+                } else {
+                    throw new Error("Invalid response from API");
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                aslTranslation.innerHTML = `<p>Sorry, we couldn't process your request at this time. Please try again later.</p>`;
+                signBreakdown.innerHTML = '';
+                grammarNotes.innerHTML = '';
+            } finally {
+                hideLoading(translateBtn, originalButtonText);
+            }
+        }
+
+        // Function to display the AI response
+        function displayAIResponse(response) {
+            // Clear previous results
+            aslTranslation.innerHTML = '';
+            signBreakdown.innerHTML = '';
+            grammarNotes.innerHTML = '';
+
+            // Split the response into sections
+            const translationMatch = response.match(/\*\*ASL Translation:\*\*\s*([\s\S]+?)\*\*Sign Breakdown:\*\*/);
+            const breakdownMatch = response.match(/\*\*Sign Breakdown:\*\*\s*([\s\S]+?)(\*\*Grammar Notes:\*\*|$)/);
+            const grammarMatch = response.match(/\*\*Grammar Notes:\*\*\s*([\s\S]+)/);
+
+            // Display ASL Translation
+            if (translationMatch && translationMatch[1]) {
+                const translationText = translationMatch[1].trim();
+                aslTranslation.innerHTML += `<p>${translationText}</p>`;
+            }
+
+            // Display Sign Breakdown
+            if (breakdownMatch && breakdownMatch[1]) {
+                const breakdownText = breakdownMatch[1].trim();
+                const breakdownItems = breakdownText.split('\n').filter(item => item.trim() !== '');
+                
+                let breakdownHTML = '';
+                breakdownItems.forEach(item => {
+                    // Check if this is a fingerspelling breakdown (single letter)
+                    if (item.match(/^[A-Z]\s*-\s*/)) {
+                        const [letter, description] = item.split(' - ').map(part => part.trim());
+                        if (letter && description) {
+                            breakdownHTML += `
+                                <div class="sign-item">
+                                    <div class="sign-letter">${letter}</div>
+                                    <div class="sign-description">${description}</div>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        const [word, description] = item.split(' - ').map(part => part.trim());
+                        if (word && description) {
+                            breakdownHTML += `
+                                <div class="sign-item">
+                                    <div class="sign-word">${word}</div>
+                                    <div class="sign-description">${description}</div>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+                
+                signBreakdown.innerHTML = breakdownHTML;
+            }
+
+            // Display Grammar Notes
+            if (grammarMatch && grammarMatch[1]) {
+                const grammarText = grammarMatch[1].trim();
+                grammarNotes.innerHTML = `<p>${grammarText}</p>`;
+            }
+        }
+
+        // Event listeners for translator
+        translateBtn.addEventListener('click', () => {
+            if (inputSentence.value.trim() !== "") {
+                translateToASL(inputSentence.value.trim());
+            } else {
+                alert("Please enter a sentence or name to translate");
+            }
+        });
+
+        inputSentence.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                translateBtn.click();
+            }
+        });
+
+        // Initialize with a sample sentence
+        window.addEventListener('load', () => {
+            inputSentence.value = "My name is ABC";
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Animation on scroll
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.fade-in-up, .feature-card, .testimonial-card');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+</body>
+</html>
